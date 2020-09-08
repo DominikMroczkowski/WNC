@@ -34,12 +34,24 @@ class Data extends StatelessWidget {
 		return SingleChildScrollView(
 			child: Column(
 				children: <Widget>[
+					_changeM(context),
 					_addSymbol(context),
-					_listSymbol(context),
+					_deleteSymbols(context),
+					_listSymbols(context),
 					_messageSegment(context)
 				],
 			),
 			padding: EdgeInsets.all(10.0),
+		);
+	}
+
+	Widget _changeM(BuildContext context) {
+		return Column(
+			children: <Widget>[
+				_header('Określ przedział (2 ** x)'),
+				_mInput(context),
+				Container(height: 10.0),
+			],
 		);
 	}
 
@@ -66,7 +78,7 @@ class Data extends StatelessWidget {
 				Expanded(
 					child: _probInput(context),
 					flex: 3
-				)
+				),
 			],
 		);
 	}
@@ -104,14 +116,32 @@ class Data extends StatelessWidget {
 				final value = snapshot.data == null ? 0.0 : snapshot.data / 100;
 				return Slider(
 					onChanged: (i) {bloc.changeProbability((i*100).toInt());},
-					value: value,
-					min: 0.1,
+					value: value ?? 0.0,
+					min: 0,
 					max: 1.0,
 					divisions: 10,
 					label: value.toString()
 				);
 			},
 		);
+	}
+
+	_mInput(BuildContext context) {
+	final bloc = Provider.of(context);
+		return StreamBuilder(
+			stream: bloc.m,
+			builder: (context, AsyncSnapshot<int> snapshot) {
+				return Slider(
+					onChanged: (i) {bloc.changeM(i.toInt());},
+					value: snapshot.data?.toDouble() ?? 2.0,
+					min: 2.0,
+					max: 16.0,
+					divisions: 14,
+					label: snapshot.data.toString()
+				);
+			},
+		);
+
 	}
 
 	Widget _addSymbolButton(BuildContext context) {
@@ -132,7 +162,22 @@ class Data extends StatelessWidget {
 		);
 	}
 
-	Widget _listSymbol(BuildContext context) {
+	Widget _deleteSymbols(BuildContext context) {
+		final bloc = Provider.of(context);
+		return StreamBuilder(
+			stream: bloc.symbols,
+			builder: (context, AsyncSnapshot<List<models.Symbol>> snapshot) {
+				if (snapshot.hasData && snapshot.data.isNotEmpty)
+					return FlatButton(
+						child: Text('Wyczyść'),
+						onPressed: bloc.deleteSymbols);
+				else
+					return Container(height: 0.0, width: 0.0);
+			}
+		);
+	}
+
+	Widget _listSymbols(BuildContext context) {
 		final bloc = Provider.of(context);
 		return StreamBuilder(
 			stream: bloc.symbols,

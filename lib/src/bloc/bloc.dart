@@ -10,17 +10,20 @@ class Bloc {
 	final _probability = BehaviorSubject<int>();
 	final _symbols     = BehaviorSubject<List<models.Symbol>>();
 	final _message     = BehaviorSubject<String>();
+	final _m           = BehaviorSubject<int>();
 	final _steps       = BehaviorSubject<List<models.EncodingStep>>();
 
 	get changeCharacter                 => _character.sink.add;
 	Function(int) get changeProbability => _probability.sink.add;
 	get changeMessage                   => _message.sink.add;
+	get changeM                         => _m.sink.add;
 	Stream<bool> get addSymbolValid     => Rx.combineLatest2(character, probability, (c, p) => true);
 
 	get character   => _character.stream.transform(_validateCharacter());
 	get probability => _probability.stream;
 	get symbols     => _symbols.stream;
 	get message     => _message.stream.transform(_validateMessage());
+	get m           => _m.stream;
 	get steps       => _steps.stream;
 
 	_validateCharacter() {
@@ -75,8 +78,6 @@ class Bloc {
 		);
 	}
 
-
-
 	addSymbol() {
 		var list = _symbols.value ?? [];
 
@@ -95,6 +96,10 @@ class Bloc {
 		_symbols.sink.add(list);
 	}
 
+	deleteSymbols() {
+		_symbols.add([]);
+	}
+
 	deleteSymbol(int index) {
 		var list = _symbols.value ?? [];
 
@@ -109,7 +114,8 @@ class Bloc {
 		_steps.add(
 			WNC.encode(
 				_symbols.value,
-				_message.value
+				_message.value,
+				_m.value
 			)
 		);
 		Navigator.of(context).pushNamed('/answer');
@@ -125,6 +131,7 @@ class Bloc {
 		_probability.close();
 		_symbols.close();
 		_message.close();
+		_m.close();
 		_steps.close();
 	}
 }

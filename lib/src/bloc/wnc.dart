@@ -1,8 +1,8 @@
 import 'package:kda/src/models/symbol.dart' as models;
 import 'package:kda/src/models/step.dart' as models;
+import 'dart:math';
 
 class WNC {
-	static int max = 65536;
 
 	static getLH(int lenght, String symbol, List<models.Symbol> symbols) {
 		int l = 0;
@@ -22,8 +22,10 @@ class WNC {
 		return [l, h];
 	}
 
-	static List<models.EncodingStep> encode(List<models.Symbol> symbols, String message) {
+	static List<models.EncodingStep> encode(List<models.Symbol> symbols, String message, int power) {
 		List<models.EncodingStep> steps = [];
+
+		int max = pow(2, power);
 
 		// initialization
 		steps.add(

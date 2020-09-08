@@ -67,11 +67,11 @@ class Answer extends StatelessWidget {
 
 	List<Widget> _stepsList(List<models.EncodingStep> steps) {
 		List<Widget> list = [];
-		steps.forEach((i) {list.add(_stepTile(i));});
+		steps.forEach((i) {list.add(_stepTile(i, steps.first.h ?? 0));});
 		return list;
 	}
 
-	Widget _stepTile(models.EncodingStep step) {
+	Widget _stepTile(models.EncodingStep step, int max) {
 		return Card( child: Container(
 			child: Column(
 				children: <Widget>[
@@ -98,11 +98,12 @@ class Answer extends StatelessWidget {
 								),
 								Expanded(
 									child: Container(),
-									flex: 65536 - (step.h)
+									flex: max - (step.h)
 								),
 							],
 						),
-						height: 10.0
+						height: 10.0,
+						decoration: BoxDecoration(color: Colors.grey),
 					),
 					Row(
 						children: <Widget>[
