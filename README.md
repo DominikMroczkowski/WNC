@@ -1,4 +1,4 @@
-# kda
+# WNC
 
-Podczas definiowania symboli i ich prodopodobieństw niezbędne jest zdefiniowanie EOF.
-Prawdopodobieństwa symboli powinny sumować się do 1.
+While defining a probabilities, you should define EOF.
+A Probabilities should sum to a 1.0f.
